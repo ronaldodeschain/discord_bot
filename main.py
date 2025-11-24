@@ -1,6 +1,8 @@
 import discord 
 import random
 import os
+import asyncio
+
 from dotenv import load_dotenv
 from discord.ext import commands
 
@@ -9,17 +11,18 @@ load_dotenv()
 
 
 bot_token = os.getenv("BOT_TOKEN")
+
 intents = discord.Intents.default()
 intents.message_content = True
 bot = commands.Bot(command_prefix = '!',intents=intents)
 
-class arma():
+class Arma():
     poder = 5
     nome = "Espada Olimpica"
 
 
 
-espada = arma()
+espada = Arma()
 
 
 
@@ -53,5 +56,21 @@ async def processar(ctx,*inputs):
         if isinstance(item,int):
             await ctx.send(f'{item} é um numero')
         await ctx.send(f'resolvendo o item {item}')
+
+#testar await input
+@bot.command()
+async def ask(ctx):
+    await ctx.send("Qual seu filme favorito?")
+
+    def check(m):
+        return m.author == ctx.author and m.channel == ctx.channel
+    
+    try:
+        msg = await bot.wait_for("message",check=check,timeout=30.0)
+        favorite_movie = msg.content
+        await ctx.send(f'Opa, {favorite_movie} é um ótimo filme!')
+    except asyncio.TimeoutError:
+        await ctx.send("perdão, demorou demais pra responder!")
+
 
 bot.run(bot_token)
