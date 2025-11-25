@@ -17,14 +17,19 @@ intents.message_content = True
 bot = commands.Bot(command_prefix = '!',intents=intents)
 
 class Arma():
-    poder = 5
-    nome = "Espada Olimpica"
+    poder = 0
+    nome = ''
 
 
 
 espada = Arma()
+espada.poder = 50
+espada.nome = "Espada de ferro"
 
 
+
+armas = []
+filmes = []
 
 @bot.event
 async def on_ready():
@@ -69,8 +74,32 @@ async def ask(ctx):
         msg = await bot.wait_for("message",check=check,timeout=30.0)
         favorite_movie = msg.content
         await ctx.send(f'Opa, {favorite_movie} é um ótimo filme!')
+        filmes.append(favorite_movie)
     except asyncio.TimeoutError:
         await ctx.send("perdão, demorou demais pra responder!")
 
+@bot.command()
+async def adicionar_arma(ctx,nome,poder):
+    nova_arma = Arma()
+    nova_arma.nome = nome
+    nova_arma.poder = poder
+    armas.append(nova_arma)
+    
+    for arma in armas:
+        await ctx.send(f'O nome da arma é {arma.nome} e seu poder de ataque é {arma.poder}')
+
+    await ctx.send("Fim da lista de armas")
+
+@bot.command()
+async def listar_armas(ctx):
+    for arma in armas:
+        await ctx.send(f'Nome: {arma.nome}, Poder: {arma.poder}')
+
+@bot.command()
+async def listar_filmes(ctx):
+    for filme in filmes:
+        await ctx.send(f'Filme: {filme}')
+
 
 bot.run(bot_token)
+
