@@ -6,32 +6,20 @@ import asyncio
 from dotenv import load_dotenv
 from discord.ext import commands
 
+from models.personagem import Personagem
 
 load_dotenv()
-
-
 bot_token = os.getenv("BOT_TOKEN")
-
 intents = discord.Intents.default()
 intents.message_content = True
 bot = commands.Bot(command_prefix = '!',intents=intents)
 
-class Personagem():
-    def __init__(self,nome,nivel,job,hp):
-        self.nome = nome
-        self.nivel = nivel
-        self.job = job
-        self.hp = hp
 
-class Arma():
-    poder = 5
-    nome = "Espada Olimpica"
-
-espada = Arma()
 personagens = []
-armas = []
 filmes = []
+atributos = {'Força':8,'Destreza':8,'Constituição':8,'Inteligência':8,'Sabedoria':8,'Carisma':8}
 
+pontos = 10
 
 @bot.event
 async def on_ready():
@@ -64,11 +52,6 @@ async def roll_dice(ctx):
         await ctx.send("Voce demorou demais para responder!")
 
 @bot.command()
-async def arma(ctx):
-    # Cria uma instância da sua classe
-    await ctx.send(f'O nome da arma é {espada.nome} e seu poder de ataque é {espada.poder}')
-
-@bot.command()
 async def processar(ctx,*inputs):
     #comando pra multiplos inputs enviados pelo user
     await ctx.send(f'processando {len(inputs)} enviados pelo usuario')
@@ -93,30 +76,12 @@ async def ask(ctx):
     except asyncio.TimeoutError:
         await ctx.send("perdão, demorou demais pra responder!")
 
-@bot.command()
-async def adicionar_arma(ctx,nome,poder):
-    nova_arma = Arma()
-    nova_arma.nome = nome
-    nova_arma.poder = poder
-    armas.append(nova_arma)
-    
-    for arma in armas:
-        await ctx.send(f'O nome da arma é {arma.nome} e seu poder de ataque é {arma.poder}')
-
-    await ctx.send("Fim da lista de armas")
-
-@bot.command()
-async def listar_armas(ctx):
-    if len(armas) == 0:
-        await ctx.send(f'a lista de armas está vazia')
-    
-        for arma in armas:
-            await ctx.send(f'Nome: {arma.nome}, Poder: {arma.poder}')
-
+#lista firlmes
 @bot.command()
 async def listar_filmes(ctx):
     for filme in filmes:
         await ctx.send(f'Filme: {filme}')
+
 #comando para criar personagem basico
 @bot.command()
 async def criar_personagem(ctx):
@@ -142,7 +107,25 @@ async def criar_personagem(ctx):
 @bot.command()
 async def listar_personagens(ctx):
     for personagem in personagens:
-        await ctx.send(f'Nome: {personagem.nome}, Nível: {personagem.nivel}, Classe: {personagem.job}, HP: {personagem.hp}')
+        await ctx.send(personagem)
 
+@bot.command()
+async def exibir_atributos(ctx):
+    def check(m):
+        return m.author == ctx.author and m.channel == ctx.channel
+     
+    resposta = ''    
+    while(resposta.lower() != "não"):
+        
+        mensagem_atributos = "Atributos:"
+        for nome,valor in atributos.items():
+            mensagem_atributos += f"\n{nome}: {valor}\n"
+        mensagem_atributos +="'''"
+
+        await ctx.send(mensagem_atributos)
+
+        await ctx.send("(deseja continuar? )")
+        msg = await bot.wait_for("message",check=check,timeout=30.0)
+        resposta = msg.content
 
 bot.run(bot_token)
