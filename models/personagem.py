@@ -4,6 +4,7 @@ class Personagem():
         self.nivel = nivel
         self.job = job
         self.hp = hp
+        skills = []
 
     def __str__(self):
         return f'Nome: {self.nome}\nNivel: {self.nivel}\nJob: {self.job}\nHP: {self.hp}'

@@ -1,0 +1,7 @@
+{
+    "nome": "Jaspion",
+    "nivel": 15,
+    "classe": "Detetive Espacial",
+    "hp": 48, 
+    "skills": ["esquiva", "acrobacia"]
+}
