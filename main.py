@@ -32,6 +32,20 @@ selecoes_skills = {}
 async def on_ready():
     print(f'Bot is online as {bot.user}')
 
+@bot.command(name='show_help')
+async def help(ctx):
+    await ctx.send(f"""\n
+    Lista de comandos do discord:
+!roll_dice - rola dados, solicita ao usuario o valor do dado a rolar
+!processar *args - teste de processos, recebe argumentos
+!ask - Solicita ao usuário o filme favorito e adiciona na lista
+!listar_filmes - lisat os filmes salvos em memoria no sistema
+!criar_personagem - Cria modelo de personagem basico
+!listar_personagens - Lista todos os personagens criados
+!escolher_skills - Abre pesquisa para escolher as skills do personagem
+!colocar_pontos - Coloca pontos nos atributos salvos em memoria
+""")
+
 #método para rolar dados
 @bot.command()
 async def roll_dice(ctx):
