@@ -1,0 +1,11 @@
+{
+    "nome": "batman",
+    "nivel": 2,
+    "classe": "detetive",
+    "hp": 5,
+    "skills": [
+        "esquiva",
+        "acrobacia",
+        "diplomacia"
+    ]
+}

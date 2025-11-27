@@ -44,11 +44,12 @@ async def help(ctx):
 !listar_personagens - Lista todos os personagens criados
 !escolher_skills - Abre pesquisa para escolher as skills do personagem
 !colocar_pontos - Coloca pontos nos atributos salvos em memoria
+!listar_fichas - Recupera os arquivos .json salvos na pasta de fichas
 """)
 
-#método para rolar dados
+
 @bot.command()
-async def roll_dice(ctx):
+async def roll_dice(ctx):#método para rolar dados
     def check(m):
         return m.author == ctx.author and m.channel == ctx.channel
     
@@ -64,9 +65,8 @@ async def roll_dice(ctx):
     except asyncio.TimeoutError:
         await ctx.send("Voce demorou demais para responder!")
 
-#teste para args
 @bot.command()
-async def processar(ctx,*inputs):
+async def processar(ctx,*inputs):#teste para args
     #comando pra multiplos inputs enviados pelo user
     await ctx.send(f'processando {len(inputs)} enviados pelo usuario')
     for item in inputs:
@@ -74,9 +74,8 @@ async def processar(ctx,*inputs):
             await ctx.send(f'{item} é um numero')
         await ctx.send(f'resolvendo o item {item}')
 
-#testar await input e adição de item em lista
 @bot.command()
-async def ask(ctx):
+async def ask(ctx): #testar await input e adição de item em lista
     await ctx.send("Qual seu filme favorito?")
 
     def check(m):
@@ -258,7 +257,12 @@ async def on_reaction_add(reaction,user): #evento para salvar os dados da reaç�
             'hp':personagem.hp,
             'skills': skills_escolhidas
         }
-        nome_arquivo = f'{personagem.nome}.json'
+
+        # Garante que o diretório 'fichas' exista
+        diretorio_fichas = 'fichas'
+        os.makedirs(diretorio_fichas, exist_ok=True)
+
+        nome_arquivo = os.path.join(diretorio_fichas, f'{personagem.nome}.json')
         with open(nome_arquivo,'w',encoding='utf-8') as f:
             json.dump(dados_para_salvar,f,ensure_ascii=False, indent=4)
 
@@ -267,4 +271,26 @@ async def on_reaction_add(reaction,user): #evento para salvar os dados da reaç�
         del selecoes_skills[user.id]
         return
     
+@bot.command(name='listar_fichas')
+async def listar_fichas(ctx): #listar os arquivos .json da pasta fichas
+    #garantir queo diretorio exista
+    diretorio_fichas = 'fichas'
+    if not os.path.isdir(diretorio_fichas) or not os.listdir(diretorio_fichas):
+        await ctx.send('Nenhuma ficha de personagem foi encontrada')
+        return
+    
+    await ctx.send('--- Fichas de Personagem Salvas ---')
+    for filename in os.listdir(diretorio_fichas):
+        if filename.endswith('.json'):
+            file_path = os.path.join(diretorio_fichas,filename)
+            try:
+                with open(file_path,'r',encoding='utf-8') as f:
+                    dados_ficha = json.load(f)
+                    ficha_formatada = json.dumps(dados_ficha,indent=4,
+                                                ensure_ascii=False)
+                    await ctx.send(f'json\n{ficha_formatada}')
+            except Exception as e:
+                await ctx.send(f'Erro ao ler a ficha {filename} : {e}')
+
+
 bot.run(bot_token)

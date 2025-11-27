@@ -1,0 +1,9 @@
+{
+    "nome": "scooby-doo",
+    "nivel": 20,
+    "classe": "super investigador",
+    "hp": 250,
+    "skills": [
+        "esquiva"
+    ]
+}

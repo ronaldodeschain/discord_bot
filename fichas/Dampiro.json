@@ -1,0 +1,10 @@
+{
+    "nome": "Dampiro",
+    "nivel": 22,
+    "classe": "Vampire Hunter",
+    "hp": 666,
+    "skills": [
+        "esquiva",
+        "acrobacia"
+    ]
+}
